@@ -21,6 +21,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.control.TextField;
 
 /**
@@ -70,6 +72,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         
+        ArrayList<String> missing = new ArrayList<>();
         
         System.out.println("=====Server Files======");
         FTPFile[] files = ftp.listFiles(folder);
@@ -81,23 +84,27 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
             if(found==false){
-                System.out.println("File missing, downloading: "+file.getName());
-                
-                String remoteFile1 = folder+file.getName();
-                File downloadFile1 = new File(file.getName());
+                missing.add(file.getName());
+            }
+            
+            
+        }
+        
+        System.out.println(missing.size()+" new items found. Now downloading");
+        for(String item:missing){
+                System.out.println("File missing, downloading: "+item);
+                String remoteFile1 = folder+item;
+                File downloadFile1 = new File(item);
                 boolean success;
                 try (OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1))) {
                     success = ftp.retrieveFile(remoteFile1, outputStream1);
                 }
 
                 if (success) {
-                    System.out.println("File #1 has been downloaded successfully.");
+                    System.out.println("File "+item+ " has been downloaded successfully.");
                 }
-            }
-            
-            
         }
-        
+        System.out.println("Finished downloading missing files.");
         
         
         ftp.disconnect();
