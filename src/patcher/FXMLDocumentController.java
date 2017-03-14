@@ -22,7 +22,10 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 
 /**
@@ -39,6 +42,9 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private TextField serverURL;
+    
+    @FXML
+    private ProgressBar progress;
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -89,28 +95,49 @@ public class FXMLDocumentController implements Initializable {
             
             
         }
-        
-        System.out.println(missing.size()+" new items found. Now downloading");
-        for(String item:missing){
-                System.out.println("File missing, downloading: "+item);
-                String remoteFile1 = folder+item;
-                File downloadFile1 = new File(item);
-                boolean success;
-                try (OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1))) {
-                    success = ftp.retrieveFile(remoteFile1, outputStream1);
-                }
-
-                if (success) {
-                    System.out.println("File "+item+ " has been downloaded successfully.");
-                }
-        }
-        System.out.println("Finished downloading missing files.");
-        
-        
+      
+        updateFiles(missing, folder, ftp);
+            
         ftp.disconnect();
+    }
+
+    private void updateFiles(ArrayList<String> missing, String folder, FTPClient ftp) throws IOException {
         
         
         
+        
+        System.out.println(missing.size() + " new items found. Now downloading");
+        double step = 0.0;
+        if (missing.size() > 0) {
+            step = 100.0 / missing.size();
+        }
+
+        double progressFill = 0.0;
+        progress.setProgress(progressFill);
+
+        for (String item : missing) {
+            System.out.println("File missing, downloading: " + item);
+            String remoteFile1 = folder + item;
+            File downloadFile1 = new File(item);
+            boolean success;
+            try (OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1))) {
+                success = ftp.retrieveFile(remoteFile1, outputStream1);
+            }
+
+            if (success) {
+                System.out.println("File " + item + " has been downloaded successfully.");
+                
+                progressFill += step;
+                final double run = progressFill;
+                Platform.runLater(() -> {
+                    progress.setProgress(run);
+                });
+                
+                
+            }
+        }
+        progress.setProgress(100.0);
+        System.out.println("Finished downloading missing files.");
     }
 
     private FTPClient ftpConnect(String url) throws IOException {
