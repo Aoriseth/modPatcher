@@ -46,19 +46,17 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ProgressBar progress;
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
+    String serverAddress ;
+    String folder;
+    
     
     @FXML
     private void handlePatch(ActionEvent event) throws IOException {
         System.out.println("You clicked me!");
         //split url into server and folderstucture
         String[] uri = serverURL.getText().split("/",2);
-        String serverAddress = uri[0];
-        String folder = "/"+uri[1];
+        serverAddress = uri[0];
+        folder = "/"+uri[1];
         
         FTPClient ftp = ftpConnect(serverAddress);
         label.setText("Connecting to "+serverAddress);
@@ -71,16 +69,26 @@ public class FXMLDocumentController implements Initializable {
         
         System.out.println("=====Local Files======");
         File dir = new File(".");
+        
+        File[] filesList = getLocalFiles(dir);
+        ArrayList<String> missing = getMissing(ftp, filesList);
+        updateFiles(missing, ftp);
+            
+        ftp.disconnect();
+    }
+
+    private File[] getLocalFiles(File dir) {
         File[] filesList = dir.listFiles();
         for (File file : filesList) {
             if (file.isFile()) {
                 System.out.println(file.getName());
             }
         }
-        
+        return filesList;
+    }
+
+    private ArrayList<String> getMissing(FTPClient ftp, File[] filesList) throws IOException {
         ArrayList<String> missing = new ArrayList<>();
-        
-        System.out.println("=====Server Files======");
         FTPFile[] files = ftp.listFiles(folder);
         for (FTPFile file : files) {
             boolean found = false;
@@ -90,23 +98,18 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
             if(found==false){
-                missing.add(file.getName());
+                if(file.isFile()){
+                     missing.add(file.getName());
+                }
+               
             }
-            
-            
         }
-      
-        updateFiles(missing, folder, ftp);
-            
-        ftp.disconnect();
+        return missing;
     }
 
-    private void updateFiles(ArrayList<String> missing, String folder, FTPClient ftp) throws IOException {
+    private void updateFiles(ArrayList<String> missing, FTPClient ftp) throws IOException {
         
-        
-        
-        
-        System.out.println(missing.size() + " new items found. Now downloading");
+        System.out.println(missing.size() + " new items found.");
         double step = 0.0;
         if (missing.size() > 0) {
             step = 100.0 / missing.size();
@@ -126,18 +129,16 @@ public class FXMLDocumentController implements Initializable {
 
             if (success) {
                 System.out.println("File " + item + " has been downloaded successfully.");
-                
+                label.setText(item +" has been downloaded sucessfully");
                 progressFill += step;
-                final double run = progressFill;
-                Platform.runLater(() -> {
-                    progress.setProgress(run);
-                });
+                progress.setProgress(progressFill);
                 
                 
             }
         }
         progress.setProgress(100.0);
         System.out.println("Finished downloading missing files.");
+        label.setText("Finished downloading missing files.");
     }
 
     private FTPClient ftpConnect(String url) throws IOException {
