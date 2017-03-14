@@ -60,10 +60,12 @@ public class FXMLDocumentController implements Initializable {
         
         label.setText("Connection success: "+folder);
         
-        FTPFile[] files = ftp.listFiles("/");
+        FTPFile[] files = ftp.listFiles(folder);
         for (FTPFile file : files) {
             System.out.println(file.getName());
         }
+        System.out.println(folder);
+        
         ftp.disconnect();
         
         System.out.println("=====Local Files======");
