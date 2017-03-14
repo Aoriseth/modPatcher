@@ -48,6 +48,12 @@ public class FXMLDocumentController implements Initializable {
         System.out.println("You clicked me!");
         FTPClient ftp = ftpConnect(serverURL.getText());
         label.setText("Connecting to "+serverURL.getText());
+        if (ftp==null){
+            label.setText("Connection failed: incorrect url");
+            return;
+        }
+        
+        label.setText("Connection success: "+serverURL.getText());
         
         FTPFile[] files = ftp.listFiles("/mods");
         for (FTPFile file : files) {
@@ -71,7 +77,13 @@ public class FXMLDocumentController implements Initializable {
         //new ftp client
         FTPClient ftp = new FTPClient();
         //Try to connect
-        ftp.connect("www.cockx.me");
+        try{
+            ftp.connect(url);
+        }
+        catch(IOException object){
+        return null;
+        }
+        
         ftp.enterLocalPassiveMode();
         ftp.login("anonymous", "");
         return ftp;
