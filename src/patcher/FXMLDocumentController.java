@@ -5,6 +5,7 @@
  */
 package patcher;
 
+import java.io.BufferedOutputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -81,10 +82,23 @@ public class FXMLDocumentController implements Initializable {
             }
             if(found==false){
                 System.out.println("File missing, downloading: "+file.getName());
+                
+                String remoteFile1 = folder+file.getName();
+                File downloadFile1 = new File(file.getName());
+                boolean success;
+                try (OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1))) {
+                    success = ftp.retrieveFile(remoteFile1, outputStream1);
+                }
+
+                if (success) {
+                    System.out.println("File #1 has been downloaded successfully.");
+                }
             }
             
             
         }
+        
+        
         
         ftp.disconnect();
         
