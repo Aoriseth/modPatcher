@@ -60,14 +60,6 @@ public class FXMLDocumentController implements Initializable {
         
         label.setText("Connection success: "+folder);
         
-        FTPFile[] files = ftp.listFiles(folder);
-        for (FTPFile file : files) {
-            System.out.println(file.getName());
-        }
-        System.out.println(folder);
-        
-        ftp.disconnect();
-        
         System.out.println("=====Local Files======");
         File dir = new File(".");
         File[] filesList = dir.listFiles();
@@ -75,8 +67,28 @@ public class FXMLDocumentController implements Initializable {
             if (file.isFile()) {
                 System.out.println(file.getName());
             }
-            ftp.disconnect();
         }
+        
+        
+        System.out.println("=====Server Files======");
+        FTPFile[] files = ftp.listFiles(folder);
+        for (FTPFile file : files) {
+            boolean found = false;
+            for(File test:filesList){
+                if(test.getName().equals(file.getName())){
+                    found=true;
+                }
+            }
+            if(found==false){
+                System.out.println("File missing, downloading: "+file.getName());
+            }
+            
+            
+        }
+        
+        ftp.disconnect();
+        
+        
         
     }
 
