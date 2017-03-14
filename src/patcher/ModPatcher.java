@@ -25,6 +25,7 @@ public class ModPatcher extends Application {
         
         stage.setScene(scene);
         stage.show();
+        stage.setTitle("Patcher");
     }
 
     /**

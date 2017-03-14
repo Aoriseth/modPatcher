@@ -20,6 +20,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import java.io.File;
+import javafx.scene.control.TextField;
 
 /**
  *
@@ -34,6 +35,9 @@ public class FXMLDocumentController implements Initializable {
     private Label label;
     
     @FXML
+    private TextField serverURL;
+    
+    @FXML
     private void handleButtonAction(ActionEvent event) {
         System.out.println("You clicked me!");
         label.setText("Hello World!");
@@ -42,13 +46,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handlePatch(ActionEvent event) throws IOException {
         System.out.println("You clicked me!");
-        label.setText("Patching!");
-        //new ftp client
-        FTPClient ftp = new FTPClient();
-        //Try to connect
-        ftp.connect("www.cockx.me");
-        ftp.enterLocalPassiveMode();
-        ftp.login("anonymous", "");
+        FTPClient ftp = ftpConnect(serverURL.getText());
+        label.setText("Connecting to "+serverURL.getText());
+        
         FTPFile[] files = ftp.listFiles("/mods");
         for (FTPFile file : files) {
             System.out.println(file.getName());
@@ -65,6 +65,16 @@ public class FXMLDocumentController implements Initializable {
             ftp.disconnect();
         }
         
+    }
+
+    private FTPClient ftpConnect(String url) throws IOException {
+        //new ftp client
+        FTPClient ftp = new FTPClient();
+        //Try to connect
+        ftp.connect("www.cockx.me");
+        ftp.enterLocalPassiveMode();
+        ftp.login("anonymous", "");
+        return ftp;
     }
     
     @Override
