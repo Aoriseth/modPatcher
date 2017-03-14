@@ -46,16 +46,21 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handlePatch(ActionEvent event) throws IOException {
         System.out.println("You clicked me!");
-        FTPClient ftp = ftpConnect(serverURL.getText());
-        label.setText("Connecting to "+serverURL.getText());
+        //split url into server and folderstucture
+        String[] uri = serverURL.getText().split("/",2);
+        String serverAddress = uri[0];
+        String folder = "/"+uri[1];
+        
+        FTPClient ftp = ftpConnect(serverAddress);
+        label.setText("Connecting to "+serverAddress);
         if (ftp==null){
             label.setText("Connection failed: incorrect url");
             return;
         }
         
-        label.setText("Connection success: "+serverURL.getText());
+        label.setText("Connection success: "+folder);
         
-        FTPFile[] files = ftp.listFiles("/mods");
+        FTPFile[] files = ftp.listFiles("/");
         for (FTPFile file : files) {
             System.out.println(file.getName());
         }
