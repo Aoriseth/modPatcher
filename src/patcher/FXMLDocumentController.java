@@ -48,6 +48,7 @@ public class FXMLDocumentController implements Initializable {
     
     String serverAddress ;
     String folder;
+    String localdir;
     
     
     @FXML
@@ -68,7 +69,8 @@ public class FXMLDocumentController implements Initializable {
         label.setText("Connection success: "+folder);
         
         System.out.println("=====Local Files======");
-        File dir = new File(".");
+        localdir = "mods";
+        File dir = new File(localdir);
         
         File[] filesList = getLocalFiles(dir);
         ArrayList<String> missing = getMissing(ftp, filesList);
@@ -121,7 +123,8 @@ public class FXMLDocumentController implements Initializable {
         for (String item : missing) {
             System.out.println("File missing, downloading: " + item);
             String remoteFile1 = folder + item;
-            File downloadFile1 = new File(item);
+            File downloadFile1 = new File(localdir+"/"+item);
+            
             boolean success;
             try (OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1))) {
                 success = ftp.retrieveFile(remoteFile1, outputStream1);
