@@ -12,21 +12,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Properties;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
 /**
  *
@@ -46,9 +41,21 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ProgressBar progress;
     
+    @FXML
+    private TextField locdir;
+    
     String serverAddress ;
     String folder;
     String localdir;
+    
+    @FXML
+    private void handleDirchoose(ActionEvent event){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        label.setText("trying to open file dialog");
+
+    }
+    
     
     
     @FXML
@@ -69,7 +76,7 @@ public class FXMLDocumentController implements Initializable {
         label.setText("Connection success: "+folder);
         
         System.out.println("=====Local Files======");
-        localdir = "mods";
+        localdir = locdir.getText();
         File dir = new File(localdir);
         
         File[] filesList = getLocalFiles(dir);
