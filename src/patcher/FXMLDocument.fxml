@@ -6,12 +6,14 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="129.0" prefWidth="484.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="patcher.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="166.0" prefWidth="532.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="patcher.FXMLDocumentController">
     <children>
-        <Label fx:id="label" layoutX="97.0" layoutY="86.0" minHeight="16" minWidth="69" prefHeight="17.0" prefWidth="291.0" />
-      <Button fx:id="patch" layoutX="413.0" layoutY="82.0" mnemonicParsing="false" onAction="#handlePatch" text="Patch" />
-      <TextField fx:id="serverURL" layoutX="93.0" layoutY="22.0" prefHeight="25.0" prefWidth="366.0" text="cockx.me/mods/" />
-      <Label layoutX="26.0" layoutY="26.0" text="Server URL:" />
-      <ProgressBar fx:id="progress" layoutX="93.0" layoutY="55.0" prefHeight="18.0" prefWidth="366.0" progress="0.0" />
+        <Label fx:id="label" layoutX="152.0" layoutY="131.0" minHeight="16" minWidth="69" prefHeight="17.0" prefWidth="291.0" />
+      <Button fx:id="patch" layoutX="472.0" layoutY="127.0" mnemonicParsing="false" onAction="#handlePatch" text="Patch" />
+      <TextField fx:id="serverURL" layoutX="152.0" layoutY="22.0" prefHeight="25.0" prefWidth="366.0" text="cockx.me/mods/" />
+      <Label layoutX="85.0" layoutY="26.0" text="Server URL:" />
+      <ProgressBar fx:id="progress" layoutX="152.0" layoutY="54.0" prefHeight="18.0" prefWidth="366.0" progress="0.0" />
+      <TextField fx:id="locdir" layoutX="152.0" layoutY="82.0" prefHeight="25.0" prefWidth="366.0" text="mods" />
+      <Button fx:id="dirchoose" layoutX="26.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleDirchoose" prefHeight="25.0" prefWidth="117.0" text="Choose dir" />
     </children>
 </AnchorPane>
